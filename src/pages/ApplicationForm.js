@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './ApplicationForm.css';
-import axios from 'axios';
+
 
 const ApplicationForm = ({ onClose }) => {
   const [name, setName] = useState('');
@@ -32,18 +32,26 @@ const ApplicationForm = ({ onClose }) => {
     formData.append('cvFile', cvFile);
 
     try {
-      await axios.post('http://localhost:5000/submit-application', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      const response = await fetch('http://localhost:5000/submit-application', {
+        method: 'POST',
+        body: formData,
+        // headers: {
+        //   'Content-Type': 'multipart/form-data'
+        // }
       });
-
-      alert('Form submitted successfully!');
-      onClose();
+    
+      if (response.ok) {
+        alert('Form submitted successfully!');
+        onClose();
+      } else {
+        console.error('An error occurred:', response.statusText);
+        // Handle error scenario
+      }
     } catch (error) {
       console.error('An error occurred:', error);
       // Handle error scenario
     }
+    
   };
 
   return (
